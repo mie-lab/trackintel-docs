@@ -35,11 +35,24 @@
             
   <div class="section" id="the-trackintel-documentation">
 <h1>The <em>trackintel</em> Documentation<a class="headerlink" href="#the-trackintel-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Thank you for your interest in trackintel!</p>
 <p>Focusing on human mobility data, <em>trackintel</em> provides functionalities for data quality
 enhancement, integrating data from various sources, performing quantitative analysis and
 mining tasks, and visualizing the data and/or analysis results. In addition to these
 core functionalities, packages are provided for user mobility profiling and trajectory-based
-learning analytics.</p>
+learning analytics. It is split into the different steps of a typical processing pipeline,
+and assumes that data is available adhering to the trackintel data model format:</p>
+<ul class="simple">
+<li>Preprocessing (filtering, outlier detection, imputation of missing values)</li>
+<li>Contextual Augmentation (map matching, trajectory algebra-based context addition)</li>
+<li>Analysis (extraction of mobility metrics and descriptors, preferences, systematic mobility)</li>
+<li>Visualization and Communication (generation of maps, charts, etc.)</li>
+<li>Non-standardized methods and algorithms are explicitly denoted as experimental and
+(whenever possible) separated from the standardized methods.</li>
+</ul>
+<p>For information about the trackintel data models that are used throughout the framework,
+please refer to the Data Model page. For a quick deployment to a PostGIS database, you can
+use the SQL commands given at Data Model page (SQL).</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents</span></p>
 <ul>
