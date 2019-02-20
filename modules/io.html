@@ -79,7 +79,7 @@ See <a class="reference internal" href="model.html"><span class="doc">Model</spa
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>conn_string</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">A connection string to connect to a database, e.g., 
-<cite>‘postgresql://username:password&#64;host:socket/database’</cite>.</p>
+<code class="docutils literal notranslate"><span class="pre">postgresql://username:password&#64;host:socket/database</span></code>.</p>
 </dd>
 <dt><strong>table_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">The table to read the positionfixes from.</p>
@@ -101,8 +101,9 @@ See <a class="reference internal" href="model.html"><span class="doc">Model</spa
 <dl class="function">
 <dt id="trackintel.io.postgis.write_positionfixes_postgis">
 <code class="descclassname">trackintel.io.postgis.</code><code class="descname">write_positionfixes_postgis</code><span class="sig-paren">(</span><em>positionfixes</em>, <em>conn_string</em>, <em>table_name</em><span class="sig-paren">)</span><a class="headerlink" href="#trackintel.io.postgis.write_positionfixes_postgis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stores positionfixes to PostGIS.</p>
-<p>Attention! This replaces the table if it already exists!</p>
+<dd><p>Stores positionfixes to PostGIS. Usually, this is directly called on a positionfixes 
+dataframe (see example below).</p>
+<p><strong>Attention!</strong> This replaces the table if it already exists!</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -113,7 +114,7 @@ See <a class="reference internal" href="model.html"><span class="doc">Model</spa
 </dd>
 <dt><strong>conn_string</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">A connection string to connect to a database, e.g., 
-<cite>‘postgresql://username:password&#64;host:socket/database’</cite>.</p>
+<code class="docutils literal notranslate"><span class="pre">postgresql://username:password&#64;host:socket/database</span></code>.</p>
 </dd>
 <dt><strong>table_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">The name of the table to write to.</p>
@@ -123,6 +124,10 @@ See <a class="reference internal" href="model.html"><span class="doc">Model</spa
 </tr>
 </tbody>
 </table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">as_positionfixes</span><span class="o">.</span><span class="n">to_postgis</span><span class="p">(</span><span class="n">conn_string</span><span class="p">,</span> <span class="n">table_name</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
