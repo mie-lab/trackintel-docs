@@ -16,7 +16,7 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Introduction" href="introduction.html" />
+    <link rel="next" title="Tutorial" href="tutorial.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -51,15 +51,23 @@ and assumes that data is available adhering to the trackintel data model format:
 (whenever possible) separated from the standardized methods.</li>
 </ul>
 <p>For information about the trackintel data models that are used throughout the framework,
-please refer to the Data Model page. For a quick deployment to a PostGIS database, you can
-use the SQL commands given at Data Model page (SQL).</p>
+please refer to the <a class="reference internal" href="modules/model.html"><span class="doc">Model</span></a> page. For a quick deployment to a PostGIS database, you can
+use the SQL commands given at <a class="reference internal" href="content/data_model_sql.html"><span class="doc">Data Model (SQL)</span></a> or run the file found
+<a class="reference external" href="https://github.com/mie-lab/trackintel/blob/master/sql/create_tables_pg.sql">on Github</a>.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules/model.html">Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules/io.html">Input/Output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/model.html">Model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/model.html#geopandas-implementation">GeoPandas Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/model.html#available-accessors">Available Accessors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/io.html">Input/Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/io.html#csv-file-import">CSV File Import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/io.html#postgis-import">PostGIS Import</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="modules/preprocessing.html">Preprocessing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules/preprocessing.html#staypoints">Staypoints</a></li>
 </ul>
@@ -98,7 +106,6 @@ use the SQL commands given at Data Model page (SQL).</p>
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules/model.html">Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules/io.html">Input/Output</a></li>
@@ -112,7 +119,7 @@ use the SQL commands given at Data Model page (SQL).</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="introduction.html" title="next chapter">Introduction</a></li>
+      <li>Next: <a href="tutorial.html" title="next chapter">Tutorial</a></li>
   </ul></li>
 </ul>
 </div>

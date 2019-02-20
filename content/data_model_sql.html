@@ -35,24 +35,60 @@
   <div class="section" id="data-model-sql">
 <h1>Data Model (SQL)<a class="headerlink" href="#data-model-sql" title="Permalink to this headline">¶</a></h1>
 <p>For a general description of the data model, please refer to the
-<a class="reference internal" href="../modules/model.html"><span class="doc">Model</span></a>.
-You can download the <a class="reference external" href="https://github.com/mie-lab/trackintel/blob/master/sql/create_tables_pg.sql">complete SQL script here</a>.</p>
-<p>The <strong>positionfixes</strong> table contains all position fixes of all users. They are not
+<a class="reference internal" href="../modules/model.html"><span class="doc">Model</span></a>. You can download the
+<a class="reference external" href="https://github.com/mie-lab/trackintel/blob/master/sql/create_tables_pg.sql">complete SQL script here</a>
+in case you want to quickly set up a database.</p>
+<p>The <strong>positionfixes</strong> table contains all positionfixes of all users. They are not
 only linked to a user, but also to a trip leg or a staypoint:</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">positionfixes</span> <span class="p">(</span>
+    <span class="c1">-- Common to all tables.</span>
     <span class="n">id</span> <span class="nb">bigint</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
     <span class="n">user_id</span> <span class="nb">bigint</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+
+    <span class="c1">-- References to foreign tables.</span>
     <span class="n">tripleg_id</span> <span class="nb">bigint</span><span class="p">,</span>
     <span class="n">staypoint_id</span> <span class="nb">bigint</span><span class="p">,</span>
 
+    <span class="c1">-- Temporal attributes.</span>
     <span class="n">tracked_at</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-    <span class="n">latitude</span> <span class="n">double</span> <span class="k">precision</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-    <span class="n">longitude</span> <span class="n">double</span> <span class="k">precision</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+
+    <span class="c1">-- Specific attributes.</span>
     <span class="n">elevation</span> <span class="n">double</span> <span class="k">precision</span><span class="p">,</span>
     <span class="n">accuracy</span> <span class="n">double</span> <span class="k">precision</span><span class="p">,</span>
-    <span class="n">geom</span> <span class="n">geometry</span><span class="p">(</span><span class="n">Point</span><span class="p">,</span><span class="mi">4326</span><span class="p">),</span>
 
+    <span class="c1">-- Spatial attributes.</span>
+    <span class="n">geom</span> <span class="n">geometry</span><span class="p">(</span><span class="n">Point</span><span class="p">,</span> <span class="mi">4326</span><span class="p">),</span>
+
+    <span class="c1">-- Constraints.</span>
     <span class="k">CONSTRAINT</span> <span class="n">positionfixes_pkey</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>The <strong>staypoints</strong> table contains all stay points, i.e., places where a user stayed
+for a certain amount of time. They are linked to both a user, as well as a previous
+and a next trip. Depending on the purpose and time spent, a staypoint can be an activity,
+i.e., a meaningful destination of movement:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">staypoints</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">bigint</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">user_id</span> <span class="nb">bigint</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+
+    <span class="n">trip_id</span> <span class="nb">bigint</span><span class="p">,</span>
+    <span class="n">place_id</span> <span class="nb">bigint</span><span class="p">,</span>
+
+    <span class="n">started_at</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">finished_at</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+
+    <span class="n">activity</span> <span class="nb">boolean</span><span class="p">,</span>
+
+    <span class="n">purpose_detected</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">,</span>
+    <span class="n">purpose_validated</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">,</span>
+    <span class="n">validated</span> <span class="nb">boolean</span><span class="p">,</span>
+    <span class="n">validated_at</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span><span class="p">,</span>
+
+    <span class="n">geom_raw</span> <span class="n">geometry</span><span class="p">(</span><span class="n">Point</span><span class="p">,</span> <span class="mi">4326</span><span class="p">),</span>
+    <span class="n">geom</span> <span class="n">geometry</span><span class="p">(</span><span class="n">Point</span><span class="p">,</span> <span class="mi">4326</span><span class="p">),</span>
+
+    <span class="k">CONSTRAINT</span> <span class="n">staypoints_pkey</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
 <span class="p">);</span>
 </pre></div>
 </div>
@@ -62,6 +98,7 @@ and if applicable, a public transport case:</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">triplegs</span> <span class="p">(</span>
     <span class="n">id</span> <span class="nb">bigint</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
     <span class="n">user_id</span> <span class="nb">bigint</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+
     <span class="n">trip_id</span> <span class="nb">bigint</span><span class="p">,</span>
     <span class="n">cust_movements_id</span> <span class="nb">bigint</span><span class="p">,</span>
 
@@ -73,70 +110,44 @@ and if applicable, a public transport case:</p>
     <span class="n">validated</span> <span class="nb">boolean</span><span class="p">,</span>
     <span class="n">validated_at</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span><span class="p">,</span>
 
-    <span class="n">geometry_raw</span> <span class="n">geometry</span><span class="p">,</span>
-    <span class="n">geometry</span> <span class="n">geometry</span><span class="p">,</span>
+    <span class="n">geom_raw</span> <span class="n">geometry</span><span class="p">(</span><span class="n">Linestring</span><span class="p">,</span> <span class="mi">4326</span><span class="p">),</span>
+    <span class="n">geom</span> <span class="n">geometry</span><span class="p">(</span><span class="n">Linestring</span><span class="p">,</span> <span class="mi">4326</span><span class="p">),</span>
 
     <span class="k">CONSTRAINT</span> <span class="n">triplegs_pkey</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
 <span class="p">);</span>
 </pre></div>
 </div>
-<p>The <strong>staypoints</strong> table contains all stay points, i.e., places, where a user stayed
-for a certain amount of time. They are linked to both a user, as well as a previous
-and a next trip. Depending on the purpose and time spent, a staypoint can be an activity,
-i.e., a meaningful destination of movement:</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">staypoints</span> <span class="p">(</span>
-    <span class="n">id</span> <span class="nb">bigint</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-    <span class="n">user_id</span> <span class="nb">bigint</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-
-    <span class="n">trip_id</span> <span class="nb">bigint</span><span class="p">,</span>
-    <span class="n">prev_trip_id</span> <span class="nb">bigint</span><span class="p">,</span>
-    <span class="n">next_trip_id</span> <span class="nb">bigint</span><span class="p">,</span>
-
-    <span class="n">started_at</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-    <span class="n">finished_at</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-
-    <span class="n">purpose_detected</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">,</span>
-    <span class="n">purpose_validated</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">,</span>
-    <span class="n">validated</span> <span class="nb">boolean</span><span class="p">,</span>
-    <span class="n">validated_at</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span><span class="p">,</span>
-
-    <span class="n">place_id</span> <span class="nb">bigint</span><span class="p">,</span>
-    <span class="n">geometry_raw</span> <span class="n">geometry</span><span class="p">,</span>
-    <span class="n">geometry</span> <span class="n">geometry</span><span class="p">,</span>
-    <span class="n">activity</span> <span class="nb">boolean</span><span class="p">,</span>
-
-    <span class="k">CONSTRAINT</span> <span class="n">staypoints_pkey</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
-<span class="p">);</span>
-</pre></div>
-</div>
 <p>The <strong>trips</strong> table contains all trips, i.e., collection of trip legs going from one
 activity (staypoint with <code class="docutils literal notranslate"><span class="pre">activity==True</span></code>) to another. They are simply linked to a user.
-They also have attributes (origin &amp; destination) to link them to a table with place IDs.
+They also have attributes (origin_id &amp; destination_id) to link them to a table with place IDs.
 Further, they can be part of one or more tours:</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">trips</span> <span class="p">(</span>
     <span class="n">id</span> <span class="nb">bigint</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
     <span class="n">user_id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
 
+    <span class="n">origin_id</span> <span class="nb">bigint</span><span class="p">,</span>
+    <span class="n">destination_id</span> <span class="nb">bigint</span><span class="p">,</span>
+    <span class="n">tour_id</span> <span class="nb">BIGINT</span><span class="p">[],</span>
+
     <span class="n">started_at</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
     <span class="n">finished_at</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-    <span class="n">origin</span> <span class="nb">bigint</span><span class="p">,</span>
-    <span class="n">destination</span> <span class="nb">bigint</span><span class="p">,</span>
-    <span class="n">tour_id</span> <span class="nb">BIGINT</span><span class="p">[],</span>
 
     <span class="k">CONSTRAINT</span> <span class="n">trips_pkey</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
 <span class="p">);</span>
 </pre></div>
 </div>
-<p>The <strong>customer movements</strong> table contains all customer movements (Schoenfelder and
-Axhausen 2010), i.e., sequence of trip legs which use only public transport. They are
-linked to a user and a trip:</p>
+<p>The <strong>customer movements</strong> table contains all customer movements [1], i.e., sequence of triplegs
+which use only public transport (by the provider specified as <code class="docutils literal notranslate"><span class="pre">provider</span></code>). They are linked to
+a user and a trip:</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">cust_movements</span> <span class="p">(</span>
     <span class="n">id</span> <span class="nb">bigint</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
     <span class="n">user_id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+
     <span class="n">trip_id</span> <span class="nb">bigint</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
 
     <span class="n">started_at</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
     <span class="n">finished_at</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+
     <span class="n">provider</span> <span class="nb">varchar</span><span class="p">,</span>
 
     <span class="k">CONSTRAINT</span> <span class="n">cust_movements_pkey</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
@@ -144,15 +155,17 @@ linked to a user and a trip:</p>
 </pre></div>
 </div>
 <p>The <strong>tours</strong> table contains all tours (tours and journeys), i.e., sequence of trips
-which start and end at the same place (in case of <code class="docutils literal notranslate"><span class="pre">journeys==home</span></code>). They are linked
-to a user:</p>
+which start and end at the same place (in case of <code class="docutils literal notranslate"><span class="pre">journey==True</span></code> this place is <em>home</em>).
+They are linked to a user:</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">tours</span> <span class="p">(</span>
     <span class="n">id</span> <span class="nb">bigint</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
     <span class="n">user_id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
 
+    <span class="n">origin_destination_id</span> <span class="nb">bigint</span><span class="p">,</span>
+
     <span class="n">started_at</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
     <span class="n">finished_at</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-    <span class="n">origin</span> <span class="n">geometry</span><span class="p">,</span>
+
     <span class="n">journey</span> <span class="n">bool</span><span class="p">,</span>
 
     <span class="k">CONSTRAINT</span> <span class="n">tours_pkey</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
@@ -163,12 +176,31 @@ to a user:</p>
 staypoints) meaningful locations:</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">places</span> <span class="p">(</span>
     <span class="n">id</span> <span class="nb">bigint</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-    <span class="n">geom</span> <span class="n">geometry</span><span class="p">,</span>
-    <span class="n">user_id</span> <span class="nb">BIGINT</span><span class="p">,</span>
+    <span class="n">user_id</span> <span class="nb">bigint</span><span class="p">,</span>
+
     <span class="n">purpose</span> <span class="nb">VARCHAR</span><span class="p">,</span>
-    <span class="n">staypoint_id</span> <span class="nb">BIGINT</span><span class="p">[]</span>
+
+    <span class="n">geom</span> <span class="n">geometry</span><span class="p">(</span><span class="n">Polygon</span><span class="p">,</span> <span class="mi">4326</span><span class="p">),</span>
+
+    <span class="k">CONSTRAINT</span> <span class="n">places_pkey</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
 <span class="p">);</span>
 </pre></div>
+</div>
+<p>The <strong>users</strong> table contains additional information about individual users:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">users</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">bigint</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+
+    <span class="n">geom_home</span> <span class="n">geometry</span><span class="p">(</span><span class="n">Point</span><span class="p">,</span> <span class="mi">4326</span><span class="p">),</span>
+    <span class="n">geom_work</span> <span class="n">geometry</span><span class="p">(</span><span class="n">Point</span><span class="p">,</span> <span class="mi">4326</span><span class="p">),</span>
+
+    <span class="k">CONSTRAINT</span> <span class="n">users_pkey</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p>[1] Schönfelder S, Axhausen K. Urban rhythms and travel behaviour. Urban rhythms and travel
+behaviour. Surrey: Ashgate Publishing Ltd.; 2010.</p>
 </div>
 </div>
 
@@ -191,7 +223,6 @@ staypoints) meaningful locations:</p>
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/model.html">Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/io.html">Input/Output</a></li>

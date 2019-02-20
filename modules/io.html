@@ -36,6 +36,40 @@
             
   <div class="section" id="input-output">
 <h1>Input/Output<a class="headerlink" href="#input-output" title="Permalink to this headline">¶</a></h1>
+<p>We primarily support two types of data ingestion:</p>
+<ul class="simple">
+<li>From CSV files.</li>
+<li>From PostGIS databases.</li>
+</ul>
+<div class="section" id="csv-file-import">
+<h2>CSV File Import<a class="headerlink" href="#csv-file-import" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="trackintel.io.file.read_positionfixes_csv">
+<code class="descclassname">trackintel.io.file.</code><code class="descname">read_positionfixes_csv</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#trackintel.io.file.read_positionfixes_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps the pandas read_csv function, extracts longitude and latitude and 
+builds a geopandas GeoDataFrame. This also validates that the ingested data
+conforms to the trackintel understanding of positionfixes. 
+See <a class="reference internal" href="model.html"><span class="doc">Model</span></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>GeoDataFrame</strong></dt>
+<dd><p class="first last">A GeoDataFrame containing the positionfixes.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="postgis-import">
+<h2>PostGIS Import<a class="headerlink" href="#postgis-import" title="Permalink to this headline">¶</a></h2>
+<p>Not available yet.</p>
+</div>
 </div>
 
 
@@ -60,7 +94,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Input/Output</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Input/Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#csv-file-import">CSV File Import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#postgis-import">PostGIS Import</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization</a></li>
